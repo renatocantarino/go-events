@@ -14,6 +14,7 @@ type EventDispatcherTestSuite struct {
 	event2          TestEvent
 	handler         TestEventHandler
 	handler2        TestEventHandler
+	handler3        TestEventHandler
 	eventDispatcher *EventDispatcher
 }
 
@@ -38,9 +39,7 @@ type TestEventHandler struct {
 	ID int
 }
 
-func (h *TestEventHandler) Handler(event EventInterface) {
-
-}
+func (h *TestEventHandler) Handler(event EventInterface) {}
 
 func (suite *EventDispatcherTestSuite) SetupTest() {
 	suite.eventDispatcher = NewEventDispatcher()
@@ -49,6 +48,8 @@ func (suite *EventDispatcherTestSuite) SetupTest() {
 
 	suite.handler2 = TestEventHandler{ID: 2}
 	suite.event2 = TestEvent{Name: "Teste2", PayLoad: "payloadTeste2"}
+
+	suite.handler3 = TestEventHandler{ID: 3}
 }
 
 func (suite *EventDispatcherTestSuite) TestEventDispatcher_Register() {
@@ -80,6 +81,25 @@ func (suite *EventDispatcherTestSuite) TestEventDispatcher_Repetidos_Register() 
 	suite.Equal(1, len(suite.eventDispatcher.handlers[suite.event.GetName()]))
 	assert.Equal(suite.T(), &suite.handler, suite.eventDispatcher.handlers[suite.event.GetName()][0])
 
+}
+
+func (suite *EventDispatcherTestSuite) TestEventDispatcher_Clear() {
+
+	err := suite.eventDispatcher.Register(suite.event.GetName(), &suite.handler)
+	suite.Nil(err)
+	suite.Equal(1, len(suite.eventDispatcher.handlers[suite.event.GetName()]))
+
+	err = suite.eventDispatcher.Register(suite.event.GetName(), &suite.handler2)
+	suite.Nil(err)
+	suite.Equal(2, len(suite.eventDispatcher.handlers[suite.event.GetName()]))
+
+	err = suite.eventDispatcher.Register(suite.event2.GetName(), &suite.handler3)
+	suite.Nil(err)
+	suite.Equal(1, len(suite.eventDispatcher.handlers[suite.event2.GetName()]))
+
+	suite.eventDispatcher.Clear()
+	suite.Nil(err)
+	suite.Equal(0, len(suite.eventDispatcher.handlers))
 }
 
 func TestSuite(t *testing.T) {

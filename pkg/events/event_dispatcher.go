@@ -27,3 +27,8 @@ func (ed *EventDispatcher) Register(eventName string, handler EventHandlerInterf
 	return nil
 
 }
+
+func (ed *EventDispatcher) Clear() error {
+	ed.handlers = map[string][]EventHandlerInterface{}
+	return nil
+}
