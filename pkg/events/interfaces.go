@@ -5,16 +5,16 @@ import "time"
 type EventInterface interface {
 	GetName() string
 	GetDate() time.Time
-	GetPayload() interface{}
+	GetPayLoad() interface{}
 }
 
 type EventHandlerInterface interface {
-	Handler(event EventInterface)
+	Handle(event EventInterface)
 }
 
 type EventDispatcherInterface interface {
 	Register(eventName string, handler EventHandlerInterface) error
-	Dispatcher(event EventInterface) error
+	Dispatch(event EventInterface) error
 	Remove(eventName string, handler EventHandlerInterface) error
 	Has(eventName string, handler EventHandlerInterface) bool
 	Clear() error
